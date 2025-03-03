@@ -111,9 +111,9 @@ const App: React.FC = () => {
           <Select.Portal>
             <Select.Content>
               <Select.Viewport>
-                <Select.Item value="7d">最近一周</Select.Item>
-                <Select.Item value="30d">最近一月</Select.Item>
-                <Select.Item value="90d">最近三月</Select.Item>
+                <Select.Item value="7d">最近7天</Select.Item>
+                <Select.Item value="30d">最近30天</Select.Item>
+                <Select.Item value="90d">最近90天</Select.Item>
               </Select.Viewport>
             </Select.Content>
           </Select.Portal>

@@ -1,6 +1,7 @@
 {
   "name": "history-heat",
   "version": "1.0.0",
+  "type": "module",
   "description": "A browser extension to visualize browsing history with heatmap",
   "scripts": {
     "dev": "vite",
