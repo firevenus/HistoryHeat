@@ -1,0 +1,26 @@
+{
+  "title": "History Heat",
+  "timeRange": {
+    "7d": "Last 7 Days",
+    "30d": "Last 30 Days",
+    "90d": "Last 90 Days"
+  },
+  "tabs": {
+    "heatmap": "Heatmap",
+    "stats": "Statistics",
+    "favorites": "Favorites"
+  },
+  "stats": {
+    "title": "Browsing Statistics",
+    "totalVisits": "Total Visits",
+    "uniqueSites": "Unique Sites"
+  },
+  "loading": "Loading...",
+  "visits": "visits",
+  "popularPages": "Popular Pages",
+  "bookmarks": {
+    "empty": "No bookmarks yet",
+    "tip": "Click 🔥 icon while browsing to add bookmarks"
+  },
+  "switchLanguage": "Switch Language"
+} 

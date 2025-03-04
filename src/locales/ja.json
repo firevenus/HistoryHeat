@@ -1,0 +1,26 @@
+{
+  "title": "ヒストリーヒート",
+  "timeRange": {
+    "7d": "過去7日間",
+    "30d": "過去30日間",
+    "90d": "過去90日間"
+  },
+  "tabs": {
+    "heatmap": "ヒートマップ",
+    "stats": "統計",
+    "favorites": "お気に入り"
+  },
+  "stats": {
+    "title": "ブラウジング統計",
+    "totalVisits": "総訪問回数",
+    "uniqueSites": "ユニークサイト数"
+  },
+  "loading": "読み込み中...",
+  "visits": "訪問",
+  "popularPages": "人気ページ",
+  "bookmarks": {
+    "empty": "ブックマークはまだありません",
+    "tip": "ブラウジング中に🔥アイコンをクリックしてブックマークを追加"
+  },
+  "switchLanguage": "言語を切り替える"
+} 

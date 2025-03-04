@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 自定义基础变量 */
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #6b7280;
+  --background-color: #ffffff;
+  --text-color: #1f2937;
+}
+
+/* 自定义组件样式 */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors;
+  }
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4;
+  }
+}
+
+/* 全局样式 */
+body {
+  @apply bg-gray-50 text-gray-900;
+  font-family: 'MiSans', system-ui, -apple-system, sans-serif;
+}

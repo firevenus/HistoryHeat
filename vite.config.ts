@@ -7,8 +7,21 @@ export default defineConfig({
   plugins: [
     react(),
     {
+      name: 'hot-reload',
+      configureServer(server) {
+        // 监听文件变化
+        server.watcher.on('change', (file) => {
+          // 如果是 manifest.json 或 background script 发生变化
+          if (file.includes('manifest.json') || file.includes('background.ts')) {
+            console.log('Detected changes in core files, triggering extension reload...');
+            // 这里可以添加扩展重载逻辑
+          }
+        });
+      }
+    },
+    {
       name: 'copy-manifest',
-      buildEnd() {
+      closeBundle() {
         // 确保目标目录存在
         if (!fs.existsSync('dist')) {
           fs.mkdirSync('dist', { recursive: true });
@@ -35,6 +48,17 @@ export default defineConfig({
       }
     }
   ],
+  server: {
+    port: 3000,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      overlay: true
+    },
+    watch: {
+      ignored: ['!**/node_modules/**']
+    }
+  },
   build: {
     rollupOptions: {
       input: {

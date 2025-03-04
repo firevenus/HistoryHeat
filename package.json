@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A browser extension to visualize browsing history with heatmap",
+  "author": "Enki Yan and Trae AI",
   "scripts": {
     "dev": "vite",
     "dev:web": "vite --config vite.config.web.ts",
     "build": "tsc && vite build",
     "build:web": "tsc && vite build --config vite.config.web.ts",
-    "preview": "vite preview"
+    "build:web:mock": "cross-env MOCK_DATA=true tsc && vite build --config vite.config.web.ts",
+    "preview": "vite preview",
+    "preview:web": "vite preview --config vite.config.web.ts",
+    "preview:web:mock": "cross-env MOCK_DATA=true vite preview --config vite.config.web.ts",
+    "dev:extension": "start /b vite && timeout /t 5 && node scripts/reload.js",
+    "test:mock": "cross-env MOCK_DATA=true npm run dev:extension",
+    "dev:web:mock": "cross-env MOCK_DATA=true vite --config vite.config.web.ts",
+    "changelog": "node tools/generate-changelog.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -16,21 +24,31 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@tailwindcss/vite": "^4.0.9",
     "@types/react-select": "^5.0.0",
     "d3": "^7.8.5",
     "idb": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-select": "^5.10.0"
+    "react-select": "^5.10.0",
+    "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.254",
     "@types/d3": "^7.4.3",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.17.23",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "eslint-formatter-table": "^7.32.1",
+    "eslint-plugin-react": "^7.37.4",
+    "postcss": "^8.4.32",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.10",
+    "ws": "^8.18.1"
   }
 }

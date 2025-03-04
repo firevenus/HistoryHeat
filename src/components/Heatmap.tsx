@@ -355,7 +355,6 @@ const Heatmap: React.FC<HeatmapProps> = ({ historyData, onTooltipChange, onToggl
         // 如果是新域名，创建新条目
         if (!domainData.has(domain)) {
           domainData.set(domain, {
-            domain,
             visits: 0,
             items: []
           });
@@ -382,8 +381,6 @@ const Heatmap: React.FC<HeatmapProps> = ({ historyData, onTooltipChange, onToggl
       console.warn('No domain data to display in heatmap');
       return;
     }
-
-    // 计算所有域名的总访问量，用于计算百分比
     const totalVisits = sortedDomains.reduce((sum, d) => sum + d.visits, 0);
 
     // 创建D3树状图布局
@@ -680,6 +677,64 @@ const Heatmap: React.FC<HeatmapProps> = ({ historyData, onTooltipChange, onToggl
       />
     </div>
   );
+};
+
+export default Heatmap;
+
+// 新增类型定义
+interface TreemapNode extends d3.HierarchyRectangularNode<HierarchyDatum> {
+  data: DomainInfo;
+}
+
+// 提取共用事件处理hook
+const useHeatmapEvents = (onTooltipChange: HeatmapProps['onTooltipChange']) => {
+  const handleMouseOver = useCallback((event: MouseEvent, d: TreemapNode) => {
+    d3.select(event.currentTarget as Element)
+      .transition().duration(150)
+      .attr('fill-opacity', 1)
+      .attr('stroke-width', 3);
+    
+    const tooltipContent = `网站: ${d.data.domain}\n访问量: ${d.data.visits}`;
+    onTooltipChange(tooltipContent, { x: event.pageX, y: event.pageY });
+  }, [onTooltipChange]);
+
+  // 其他共用事件处理逻辑...
+  return { handleMouseOver };
+};
+
+// 优化后的渲染函数
+const renderOptimizedHeatmap = useCallback((container: HTMLDivElement, data: DomainInfo[]) => {
+  const svg = d3.select(container)
+    .selectAll('svg')
+    .data([data])
+    .join('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+  // 使用requestAnimationFrame优化重绘
+  requestAnimationFrame(() => {
+    svg.selectAll('.domain-node')
+      .data(data, d => d.domain)
+      .join(
+        enter => enter.append('g').call(enter => {
+          enter.append('rect')
+            .attr('class', 'domain-node')
+            .on('mouseover', handleMouseOver);
+        }),
+        update => update,
+        exit => exit.remove()
+      );
+  });
+}, [handleMouseOver]);
+
+// 添加错误边界组件
+const HeatmapWithErrorBoundary: React.FC<HeatmapProps> = (props) => {
+  try {
+    return <Heatmap {...props} />;
+  } catch (error) {
+    console.error('热力图渲染错误:', error);
+    return <div className="error-fallback">热力图加载失败</div>;
+  }
 };
 
 export default Heatmap;

@@ -21,7 +21,11 @@ const languageOptions = [
   { value: 'zh', label: '中文' },
   { value: 'en', label: 'English' },
   { value: 'ko', label: '한국어' },
-  { value: 'ja', label: '日本語' }
+  { value: 'ja', label: '日本語' },
+  { value: 'uk', label: 'Українська' },
+  { value: 'es', label: 'Español' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'ru', label: 'Русский' }
 ];
 
 const App: React.FC = () => {
@@ -118,34 +122,34 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <header className="header">
-        <h1>{messages.title}</h1>
-        {useMockData && (
-          <div className="mock-data-indicator">
-            <span className="mock-badge">使用模拟数据</span>
-          </div>
-        )}
-        <Select
-          className="time-range-select"
-          value={timeRangeOptions.find(option => option.value === timeRange)}
-          onChange={(option) => setTimeRange((option as any).value as TimeRange)}
-          options={timeRangeOptions}
-          isSearchable={false}
-        />
-        <Select
-          className="language-select"
-          value={languageOptions.find(option => option.value === locale)}
-          onChange={(option) => setLocale((option as any).value)}
-          options={languageOptions}
-          isSearchable={false}
-        />
+        <div className="header-left"></div>
+        <div className="header-center">
+          <h1>{messages.title}</h1>
+        </div>
+        <div className="header-right">
+          <Select
+            className="time-range-select"
+            value={timeRangeOptions.find(option => option.value === timeRange)}
+            onChange={(option) => setTimeRange((option as any).value as TimeRange)}
+            options={timeRangeOptions}
+            isSearchable={false}
+          />
+          <Select
+            className="language-select"
+            value={languageOptions.find(option => option.value === locale)}
+            onChange={(option) => setLocale((option as any).value)}
+            options={languageOptions}
+            isSearchable={false}
+          />
+        </div>
       </header>
 
       <main className="main">
         <Tabs.Root defaultValue="heatmap">
-          <Tabs.List>
-            <Tabs.Trigger value="heatmap">{messages.tabs.heatmap}</Tabs.Trigger>
-            <Tabs.Trigger value="stats">{messages.tabs.stats}</Tabs.Trigger>
-            <Tabs.Trigger value="topsites">{messages.tabs.favorites}</Tabs.Trigger>
+          <Tabs.List className="tabs-list">
+            <Tabs.Trigger className="tab-trigger" value="heatmap">{messages.tabs.heatmap}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="stats">{messages.tabs.stats}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.tabs.favorites}</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="heatmap">

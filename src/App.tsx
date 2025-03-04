@@ -5,6 +5,7 @@ import { openDB } from 'idb';
 import './App.css';
 import Heatmap from './components/Heatmap';
 import BookmarkList from './components/BookmarkList';
+import { logger } from './utils/logger';
 
 interface HistoryItem {
   id: string;
@@ -18,6 +19,9 @@ const App: React.FC = () => {
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [timeRange, setTimeRange] = useState('7d');
   const [loading, setLoading] = useState(true);
+
+  // 添加调试日志
+  logger.info("This is a popup!");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [tooltipContent, setTooltipContent] = useState('');
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -132,10 +136,41 @@ const App: React.FC = () => {
             {loading ? (
               <div>加载中...</div>
             ) : (
-              <Heatmap
-                historyData={historyData}
-                onTooltipChange={handleTooltipChange}
-              />
+              <div>
+                <Heatmap
+                  historyData={historyData}
+                  onTooltipChange={handleTooltipChange}
+                />
+                <div className="top-sites-list">
+                  <h3>热门网站排行</h3>
+                  {historyData
+                    .reduce((acc, item) => {
+                      try {
+                        const domain = new URL(item.url).hostname;
+                        const existing = acc.find(d => d.domain === domain);
+                        if (existing) {
+                          existing.visits += item.visitCount;
+                        } else {
+                          acc.push({ domain, visits: item.visitCount });
+                        }
+                        return acc;
+                      } catch (e) {
+                        return acc;
+                      }
+                    }, [] as { domain: string; visits: number }[])
+                    .sort((a, b) => b.visits - a.visits)
+                    .slice(0, 10)
+                    .map((site, index) => (
+                      <div key={site.domain} className="top-site-item">
+                        <div className="top-site-rank">{index + 1}</div>
+                        <div className="top-site-info">
+                          <div className="top-site-domain">{site.domain}</div>
+                          <div className="top-site-visits">{site.visits} 次访问</div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
             )}
             {tooltipContent && (
               <div

@@ -6,6 +6,30 @@ interface HistoryItem {
   lastVisitTime: number;
 }
 
+export async function fetchBrowserHistory(): Promise<HistoryItem[]> {
+  return new Promise((resolve, reject) => {
+    chrome.history.search(
+      { text: '', startTime: 0, maxResults: 10000 },
+      (historyItems) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
+
+        const formattedHistory: HistoryItem[] = historyItems.map(item => ({
+          id: item.id || '',
+          url: item.url || '',
+          title: item.title || '',
+          visitCount: item.visitCount || 0,
+          lastVisitTime: item.lastVisitTime || 0
+        }));
+
+        resolve(formattedHistory);
+      }
+    );
+  });
+}
+
 interface DomainStats {
   domain: string;
   visitCount: number;

@@ -133,14 +133,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   // 处理打开URL请求
   if (message.type === 'OPEN_URL' && message.url) {
     try {
-      chrome.tabs.create({ url: message.url });
-      sendResponse({ success: true });
-    } catch (error) {
-      console.error('Error opening URL:', error);
-      sendResponse({ 
-        success: false, 
-        error: String(error) 
+      console.log('Background: 收到打开URL请求', message.url);
+      chrome.tabs.create({ url: message.url }, (tab) => {
+        if (chrome.runtime.lastError) {
+          console.error('打开URL失败:', chrome.runtime.lastError.message);
+          sendResponse({ success: false, error: chrome.runtime.lastError.message });
+        } else {
+          console.log('成功打开URL:', message.url, '标签ID:', tab?.id);
+          sendResponse({ success: true, tabId: tab?.id });
+        }
       });
+    } catch (error) {
+      console.error('打开URL时出错:', error);
+      sendResponse({ success: false, error: String(error) });
     }
     return true;
   }
