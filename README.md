@@ -1,5 +1,7 @@
 # History Heat
 
+By Enki Yan and Trae AI
+
 [中文](#chinese) | [English](#english) | [日本語](#japanese) | [한국어](#korean)
 
 <div id="chinese">
@@ -28,6 +30,7 @@
 - 添加收藏夹功能
 - 支持多语言切换
 
+欢迎感兴趣的开发者一起参与开发这款插件！
 </div>
 
 <div id="english">
@@ -56,6 +59,7 @@ A browser history visualization tool based on React and D3.js, featuring multi-l
 - Added bookmark functionality
 - Multi-language support implementation
 
+Welcome developers who are interested in contributing to this plugin!
 </div>
 
 <div id="japanese">
@@ -84,6 +88,7 @@ ReactとD3.jsを基盤とした、多言語対応とモダンUIデザインを�
 - ブックマーク機能の追加
 - 多言語対応の実装
 
+プラグインの開発に興味のある開発者の皆様のご参加をお待ちしております！
 </div>
 
 <div id="korean">
@@ -112,6 +117,7 @@ React와 D3.js 기반의 브라우저 기록 시각화 도구로, 다국어 지�
 - 북마크 기능 추가
 - 다국어 지원 구현
 
+이 플러그인 개발에 관심 있는 개발자들의 참여를 환영합니다!
 </div>
 
 <!-- SEO Meta Tags -->
