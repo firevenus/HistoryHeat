@@ -5,7 +5,9 @@
   "description": "A browser extension to visualize browsing history with heatmap",
   "permissions": [
     "history",
-    "storage"
+    "storage",
+    "tabs",
+    "bookmarks"
   ],
   "action": {
     "default_popup": "index.html",

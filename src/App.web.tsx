@@ -3,9 +3,13 @@ import * as Tabs from '@radix-ui/react-tabs';
 import Select from 'react-select';
 import './App.css';
 import Heatmap from './components/Heatmap';
-import { generateMockHistoryData, filterHistoryByTimeRange } from './utils/mockDataGenerator';
+import { filterHistoryByTimeRange } from './utils/mockDataGenerator';
 import { HistoryItem, TimeRange, TooltipPosition } from './types';
 import { useLocale } from './contexts/LocaleContext';
+
+// 环境变量检测的更安全方式
+const useMockData = process.env.NODE_ENV === 'development' || process.env.MOCK_DATA === 'true';
+console.log('Server useMockData:', useMockData);
 
 const timeRangeOptions = [
   { value: '7d', label: '最近7天' },
@@ -51,11 +55,21 @@ const App: React.FC = () => {
 
   const loadHistoryData = async () => {
     try {
-      // 使用模拟数据生成器
-      const mockData = generateMockHistoryData(1500);
-      const filteredData = filterHistoryByTimeRange(mockData, timeRange);
-      
-      setHistoryData(filteredData);
+      if (useMockData) {
+        // 使用模拟数据进行测试
+        const { generateMockHistoryData } = await import('./utils/mockDataGenerator');
+        const mockData = generateMockHistoryData(1000);
+        console.log('Generated mock data:', mockData.length, 'items');
+        
+        // 根据时间范围筛选数据
+        const filteredData = filterHistoryByTimeRange(mockData, timeRange);
+        console.log('Filtered data for', timeRange, ':', filteredData.length, 'items');
+        
+        setHistoryData(filteredData);
+      } else {
+        // TODO: 加载真实数据
+        console.log('Real data loading not implemented yet');
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error loading history data:', error);
@@ -105,6 +119,11 @@ const App: React.FC = () => {
     <div className="app">
       <header className="header">
         <h1>{messages.title}</h1>
+        {useMockData && (
+          <div className="mock-data-indicator">
+            <span className="mock-badge">使用模拟数据</span>
+          </div>
+        )}
         <Select
           className="time-range-select"
           value={timeRangeOptions.find(option => option.value === timeRange)}
@@ -187,7 +206,6 @@ const App: React.FC = () => {
       </main>
       
       <footer className="footer">
-        <p>Data is simulated for demonstration purposes only</p>
         <p className="font-credit">This site uses Mi Sans Global font</p>
       </footer>
     </div>
