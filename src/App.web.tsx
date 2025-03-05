@@ -149,12 +149,12 @@ const App: React.FC = () => {
           <Tabs.List className="tabs-list">
             <Tabs.Trigger className="tab-trigger" value="heatmap">{messages.tabs.heatmap}</Tabs.Trigger>
             <Tabs.Trigger className="tab-trigger" value="stats">{messages.tabs.stats}</Tabs.Trigger>
-            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.tabs.favorites}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.timeRange["30d"]}</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="heatmap">
             {loading ? (
-              <div className="loading">{messages.loading}</div>
+              <div className="loading">Loading...</div>
             ) : (
               <Heatmap
                 historyData={historyData}
@@ -182,7 +182,7 @@ const App: React.FC = () => {
               <h3>{messages.stats.title}</h3>
               <p>{messages.stats.totalVisits}: {totalVisits}</p>
               <p>{messages.stats.uniqueSites}: {uniqueSites}</p>
-              <p>Time Range: {timeRange === '7d' ? 'Last 7 Days' : timeRange === '30d' ? 'Last 30 Days' : 'Last 90 Days'}</p>
+              <p>{messages.timeRange[timeRange]}</p>
             </div>
           </Tabs.Content>
 

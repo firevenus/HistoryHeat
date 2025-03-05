@@ -1,6 +1,41 @@
-# History Heat
+# HistoryHeat - 浏览器历史记录热力图可视化工具
 
-By Enki Yan, Trae AI, Cursor AI and Claude 3.7
+## 项目简介
+HistoryHeat 是一个用于可视化浏览器历史记录的工具，通过热力图的形式展示用户在不同时间段的浏览行为。
+
+## 功能特性
+- 可视化浏览器历史记录
+- 支持多语言界面
+- 自定义时间范围
+- 导出可视化结果
+
+## 快速开始
+```bash
+# 克隆项目
+$ git clone https://github.com/firevenus/HistoryHeat.git
+
+# 安装依赖
+$ npm install
+
+# 启动开发服务器
+$ npm run dev
+```
+
+## 使用说明
+1. 打开扩展程序
+2. 选择要分析的时间范围
+3. 查看热力图结果
+4. 可导出图片或数据
+
+## 贡献指南
+我们欢迎任何形式的贡献！请查看我们的[贡献指南](CONTRIBUTING.md)。
+
+## 相关链接
+- [GitHub 仓库](https://github.com/firevenus/HistoryHeat)
+- [在线演示](https://firevenus.github.io/HistoryHeat)
+- [问题追踪](https://github.com/firevenus/HistoryHeat/issues)
+- [讨论区](https://github.com/firevenus/HistoryHeat/discussions)
+- [项目文档](https://firevenus.github.io/HistoryHeat/docs)
 
 [English](#english) | [中文](#chinese) | [한국어](#korean) | [日本語](#japanese) | [Українська](#ukrainian) | [Español](#spanish) | [Deutsch](#german) | [Русский](#russian)
 

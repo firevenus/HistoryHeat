@@ -8,6 +8,7 @@ console.log('Server MOCK_DATA:', process.env.MOCK_DATA);
 console.log('Server useMockData:', useMockData);
 
 export default defineConfig({
+  base: '/HistoryHeat/',
   plugins: [react()],
   resolve: {
     alias: {

@@ -1,13 +1,24 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { locales, Locale, LocaleMessages } from '../locales';
+import React, { createContext, useContext, useState } from 'react';
+import { locales, Locale } from '../locales';
 
 interface LocaleContextType {
   locale: Locale;
-  messages: LocaleMessages;
   setLocale: (locale: Locale) => void;
+  messages: typeof locales[Locale];
 }
 
 const LocaleContext = createContext<LocaleContextType | null>(null);
+
+export const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [locale, setLocale] = useState<Locale>('zh');
+  const messages = locales[locale];
+
+  return (
+    <LocaleContext.Provider value={{ locale, setLocale, messages }}>
+      {children}
+    </LocaleContext.Provider>
+  );
+};
 
 export const useLocale = () => {
   const context = useContext(LocaleContext);
@@ -15,27 +26,4 @@ export const useLocale = () => {
     throw new Error('useLocale must be used within a LocaleProvider');
   }
   return context;
-};
-
-export const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [locale, setLocale] = useState<Locale>(() => {
-    const savedLocale = localStorage.getItem('locale');
-    return (savedLocale as Locale) || 'zh';
-  });
-
-  useEffect(() => {
-    localStorage.setItem('locale', locale);
-  }, [locale]);
-
-  const value = {
-    locale,
-    messages: locales[locale],
-    setLocale
-  };
-
-  return (
-    <LocaleContext.Provider value={value}>
-      {children}
-    </LocaleContext.Provider>
-  );
 };
