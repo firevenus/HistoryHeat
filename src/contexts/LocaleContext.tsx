@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { locales, Locale, LocaleMessages } from '../locales';
+import { locales, Locale } from '../locales';
 
 interface LocaleContextType {
   locale: Locale;
-  messages: LocaleMessages;
+  messages: typeof locales[Locale];
   setLocale: (locale: Locale) => void;
 }
 

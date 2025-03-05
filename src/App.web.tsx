@@ -6,6 +6,7 @@ import Heatmap from './components/Heatmap';
 import { filterHistoryByTimeRange } from './utils/mockDataGenerator';
 import { HistoryItem, TimeRange, TooltipPosition } from './types';
 import { useLocale } from './contexts/LocaleContext';
+import { LocaleMessages } from './locales';
 
 // 环境变量检测的更安全方式
 const useMockData = process.env.NODE_ENV === 'development' || process.env.MOCK_DATA === 'true';
@@ -30,6 +31,7 @@ const languageOptions = [
 
 const App: React.FC = () => {
   const { messages, locale, setLocale } = useLocale();
+  const typedMessages = messages as LocaleMessages;
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [loading, setLoading] = useState(true);
@@ -124,7 +126,7 @@ const App: React.FC = () => {
       <header className="header">
         <div className="header-left"></div>
         <div className="header-center">
-          <h1>{messages.title}</h1>
+          <h1>{typedMessages.title}</h1>
         </div>
         <div className="header-right">
           <Select
@@ -147,14 +149,14 @@ const App: React.FC = () => {
       <main className="main">
         <Tabs.Root defaultValue="heatmap">
           <Tabs.List className="tabs-list">
-            <Tabs.Trigger className="tab-trigger" value="heatmap">{messages.tabs.heatmap}</Tabs.Trigger>
-            <Tabs.Trigger className="tab-trigger" value="stats">{messages.tabs.stats}</Tabs.Trigger>
-            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.tabs.favorites}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="heatmap">{typedMessages.tabs.heatmap}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="stats">{typedMessages.tabs.stats}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="topsites">{typedMessages.tabs.favorites}</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="heatmap">
             {loading ? (
-              <div className="loading">{messages.loading}</div>
+              <div className="loading">{typedMessages.loading}</div>
             ) : (
               <Heatmap
                 historyData={historyData}
@@ -179,16 +181,16 @@ const App: React.FC = () => {
 
           <Tabs.Content value="stats">
             <div className="stats">
-              <h3>{messages.stats.title}</h3>
-              <p>{messages.stats.totalVisits}: {totalVisits}</p>
-              <p>{messages.stats.uniqueSites}: {uniqueSites}</p>
-              <p>Time Range: {timeRange === '7d' ? 'Last 7 Days' : timeRange === '30d' ? 'Last 30 Days' : 'Last 90 Days'}</p>
+              <h3>{typedMessages.stats.title}</h3>
+              <p>{typedMessages.stats.totalVisits}: {totalVisits}</p>
+              <p>{typedMessages.stats.uniqueSites}: {uniqueSites}</p>
+              <p>Time Range: {timeRange === '7d' ? typedMessages.timeRange["7d"] : timeRange === '30d' ? typedMessages.timeRange["30d"] : typedMessages.timeRange["90d"]}</p>
             </div>
           </Tabs.Content>
 
           <Tabs.Content value="topsites">
             <div className="stats">
-              <h3>Popular Sites</h3>
+              <h3>{typedMessages.popularPages}</h3>
               <div className="top-sites-list">
                 {topSites.map(([domain, count], index) => (
                   <div key={domain} className="top-site-item">
