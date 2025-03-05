@@ -1,0 +1,36 @@
+/* Mi Sans 字体定义 */
+@font-face {
+  font-family: 'Mi Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/MiSans-Regular.woff2') format('woff2'),
+       url('/fonts/MiSans-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Mi Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/MiSans-Medium.woff2') format('woff2'),
+       url('/fonts/MiSans-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Mi Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/MiSans-Semibold.woff2') format('woff2'),
+       url('/fonts/MiSans-Semibold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Mi Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/MiSans-Bold.woff2') format('woff2'),
+       url('/fonts/MiSans-Bold.woff') format('woff');
+}
