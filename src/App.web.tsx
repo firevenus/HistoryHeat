@@ -1,15 +1,17 @@
+/// <reference types="vite/client" />
+
 import React, { useEffect, useState, useRef } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
-import Select from 'react-select';
+import * as Select from '@radix-ui/react-select';
 import './App.css';
 import Heatmap from './components/Heatmap';
 import { filterHistoryByTimeRange } from './utils/mockDataGenerator';
 import { HistoryItem, TimeRange, TooltipPosition } from './types';
 import { useLocale } from './contexts/LocaleContext';
+import { Locale } from './locales';
 
-// 环境变量检测的更安全方式
-const useMockData = process.env.NODE_ENV === 'development' || process.env.MOCK_DATA === 'true';
-console.log('Server useMockData:', useMockData);
+const useMockData = import.meta.env.MOCK_DATA === 'true';
+console.log('Client useMockData:', useMockData);
 
 const timeRangeOptions = [
   { value: '7d', label: '最近7天' },
@@ -28,8 +30,32 @@ const languageOptions = [
   { value: 'ru', label: 'Русский' }
 ];
 
+// 定义 messages 的类型
+interface Messages {
+    title: string;
+    timeRange: {
+        "7d": string;
+        "30d": string;
+        "90d": string;
+    };
+    tabs: {
+        heatmap: string;
+        stats: string;
+        favorites: string;
+    };
+    stats: {
+        title: string;
+        totalVisits: string;
+        uniqueSites: string;
+    };
+    loading: string;
+    visits: string;
+    popularPages: string;
+    switchLanguage: string;
+}
+
 const App: React.FC = () => {
-  const { messages, locale, setLocale } = useLocale();
+  const { messages: localeMessages, locale, setLocale } = useLocale();
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [loading, setLoading] = useState(true);
@@ -37,6 +63,9 @@ const App: React.FC = () => {
   const [tooltipContent, setTooltipContent] = useState('');
   const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
   const tooltipRef = useRef<HTMLDivElement>(null);
+
+  // 使用类型断言将 localeMessages 转换为 Messages 类型
+  const messages = localeMessages as unknown as Messages;
 
   useEffect(() => {
     // 加载模拟数据
@@ -127,20 +156,42 @@ const App: React.FC = () => {
           <h1>{messages.title}</h1>
         </div>
         <div className="header-right">
-          <Select
-            className="time-range-select"
-            value={timeRangeOptions.find(option => option.value === timeRange)}
-            onChange={(option) => setTimeRange((option as any).value as TimeRange)}
-            options={timeRangeOptions}
-            isSearchable={false}
-          />
-          <Select
-            className="language-select"
-            value={languageOptions.find(option => option.value === locale)}
-            onChange={(option) => setLocale((option as any).value)}
-            options={languageOptions}
-            isSearchable={false}
-          />
+          <Select.Root value={timeRange} onValueChange={(value: TimeRange) => setTimeRange(value)}>
+            <Select.Trigger className="time-range-select">
+              <Select.Value placeholder="选择时间范围">
+                {timeRangeOptions.find(option => option.value === timeRange)?.label}
+              </Select.Value>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Content>
+                <Select.Viewport>
+                  {timeRangeOptions.map(option => (
+                    <Select.Item key={option.value} value={option.value}>
+                      <Select.ItemText>{option.label}</Select.ItemText>
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
+          <Select.Root value={locale} onValueChange={(value: Locale) => setLocale(value)}>
+            <Select.Trigger className="language-select">
+              <Select.Value placeholder="选择语言">
+                {languageOptions.find(option => option.value === locale)?.label}
+              </Select.Value>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Content>
+                <Select.Viewport>
+                  {languageOptions.map(option => (
+                    <Select.Item key={option.value} value={option.value}>
+                      <Select.ItemText>{option.label}</Select.ItemText>
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
         </div>
       </header>
 
@@ -149,12 +200,12 @@ const App: React.FC = () => {
           <Tabs.List className="tabs-list">
             <Tabs.Trigger className="tab-trigger" value="heatmap">{messages.tabs.heatmap}</Tabs.Trigger>
             <Tabs.Trigger className="tab-trigger" value="stats">{messages.tabs.stats}</Tabs.Trigger>
-            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.timeRange["30d"]}</Tabs.Trigger>
+            <Tabs.Trigger className="tab-trigger" value="topsites">{messages.timeRange["7d"]}</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="heatmap">
             {loading ? (
-              <div className="loading">Loading...</div>
+              <div className="loading">{messages.loading}</div>
             ) : (
               <Heatmap
                 historyData={historyData}
@@ -182,13 +233,13 @@ const App: React.FC = () => {
               <h3>{messages.stats.title}</h3>
               <p>{messages.stats.totalVisits}: {totalVisits}</p>
               <p>{messages.stats.uniqueSites}: {uniqueSites}</p>
-              <p>{messages.timeRange[timeRange]}</p>
+              <p>{messages.timeRange["7d"]}</p>
             </div>
           </Tabs.Content>
 
           <Tabs.Content value="topsites">
             <div className="stats">
-              <h3>Popular Sites</h3>
+              <h3>{messages.popularPages}</h3>
               <div className="top-sites-list">
                 {topSites.map(([domain, count], index) => (
                   <div key={domain} className="top-site-item">

@@ -7,13 +7,7 @@ import Heatmap from './components/Heatmap';
 import BookmarkList from './components/BookmarkList';
 import { logger } from './utils/logger';
 
-interface HistoryItem {
-  id: string;
-  url: string;
-  title: string;
-  visitCount: number;
-  lastVisitTime: number;
-}
+import { HistoryItem } from './types';
 
 const App: React.FC = () => {
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
