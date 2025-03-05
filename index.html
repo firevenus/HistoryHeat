@@ -1,12 +1,545 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>History Heat</title>
+    <meta name="description" content="History Heat - 一个强大的浏览器历史记录热力图可视化工具，帮助您更好地理解浏览习惯。支持多语言，保护隐私，提供 Chrome 扩展。" />
+    <meta name="keywords" content="浏览历史,热力图,Chrome扩展,数据可视化,隐私保护,browsing history,heatmap,Chrome extension" />
+    <meta name="author" content="Enki Yan" />
+    <meta property="og:title" content="History Heat - 浏览历史热力图可视化工具" />
+    <meta property="og:description" content="可视化您的浏览习惯，发现时间利用模式" />
+    <meta property="og:image" content="https://historyheat.net/preview.png" />
+    <meta property="og:url" content="https://historyheat.net" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://historyheat.net" />
+    <title>History Heat - 浏览历史热力图可视化工具</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .description {
+        color: #34495e;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .features {
+        margin-bottom: 40px;
+      }
+      .features h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      .features ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .features li {
+        margin-bottom: 10px;
+        padding-left: 24px;
+        position: relative;
+      }
+      .features li:before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #42b983;
+      }
+      .links {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .links a {
+        display: inline-block;
+        margin: 0 10px;
+        padding: 10px 20px;
+        background-color: #42b983;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .links a:hover {
+        background-color: #3aa876;
+      }
+      .language-selector {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .language-selector select {
+        padding: 8px 16px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+      }
+      .heatmap-container {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+      .heatmap-container h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      #heatmap {
+        width: 100%;
+        height: 400px;
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 10px;
+      }
+      .tooltip {
+        position: absolute;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+        pointer-events: none;
+      }
+      .feedback-button {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      .feedback-btn {
+        background-color: #42b983;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 24px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .feedback-btn:hover {
+        background-color: #3aa876;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+      .feedback-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+      .feedback-tooltip {
+        position: absolute;
+        background: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 8px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      .feedback-btn:hover + .feedback-tooltip {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WGCBYQWW9Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WGCBYQWW9Z', {
+        'page_title': document.title,
+        'page_location': window.location.href,
+        'page_path': window.location.pathname
+      });
+      
+      // 跟踪功能使用情况
+      function trackFeatureUsage(feature) {
+        gtag('event', 'feature_used', {
+          'event_category': 'Features',
+          'event_label': feature,
+          'value': 1
+        });
+      }
+
+      // 跟踪语言切换
+      function trackLanguageChange(language) {
+        gtag('event', 'language_change', {
+          'event_category': 'Preferences',
+          'event_label': language,
+          'value': 1
+        });
+      }
+
+      // 跟踪热力图交互
+      function trackHeatmapInteraction(action) {
+        gtag('event', 'heatmap_interaction', {
+          'event_category': 'Visualization',
+          'event_label': action,
+          'value': 1
+        });
+      }
+
+      // 跟踪外部链接点击
+      function trackExternalLink(url) {
+        gtag('event', 'external_link_click', {
+          'event_category': 'Outbound',
+          'event_label': url,
+          'transport_type': 'beacon'
+        });
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.web.tsx"></script>
+    <div class="container">
+      <div class="language-selector">
+        <select id="language-select" onchange="changeLanguage()">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="uk">Українська</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+
+      <!-- 添加反馈按钮 -->
+      <div class="feedback-button">
+        <button onclick="openFeedback()" class="feedback-btn" id="feedback-btn">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+          </svg>
+          <span id="feedback-text">反馈建议</span>
+        </button>
+        <div class="feedback-tooltip" id="feedback-tooltip">点击参与讨论</div>
+      </div>
+
+      <h1 id="title">History Heat</h1>
+      <p class="description" id="description">一个强大的浏览器历史记录热力图可视化工具，帮助您更好地理解您的浏览习惯。</p>
+      
+      <div class="features">
+        <h2 id="features-title">主要功能</h2>
+        <ul id="features-list">
+          <li>可视化展示浏览历史记录</li>
+          <li>热力图展示访问频率</li>
+          <li>多语言支持</li>
+          <li>数据本地存储，保护隐私</li>
+          <li>Chrome扩展程序支持</li>
+        </ul>
+      </div>
+      
+      <div class="links">
+        <a href="https://github.com/firevenus/HistoryHeat" target="_blank" id="github-link" onclick="trackExternalLink('github')">GitHub 仓库</a>
+        <a href="https://github.com/firevenus/HistoryHeat/releases" target="_blank" id="download-link" onclick="trackExternalLink('download')">下载扩展</a>
+      </div>
+
+      <div class="heatmap-container">
+        <h2 id="heatmap-title">浏览历史热力图</h2>
+        <div id="heatmap"></div>
+      </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+      const translations = {
+        zh: {
+          title: 'History Heat',
+          description: '一个强大的浏览器历史记录热力图可视化工具，帮助您更好地理解您的浏览习惯。',
+          featuresTitle: '主要功能',
+          features: [
+            '可视化展示浏览历史记录',
+            '热力图展示访问频率',
+            '多语言支持',
+            '数据本地存储，保护隐私',
+            'Chrome扩展程序支持'
+          ],
+          githubLink: 'GitHub 仓库',
+          downloadLink: '下载扩展',
+          heatmapTitle: '浏览历史热力图',
+          feedbackBtn: '反馈建议',
+          feedbackTooltip: '点击参与讨论'
+        },
+        en: {
+          title: 'History Heat',
+          description: 'A powerful browser history heatmap visualization tool to help you better understand your browsing habits.',
+          featuresTitle: 'Key Features',
+          features: [
+            'Visualize browsing history',
+            'Heatmap display of visit frequency',
+            'Multi-language support',
+            'Local data storage for privacy',
+            'Chrome extension support'
+          ],
+          githubLink: 'GitHub Repository',
+          downloadLink: 'Download Extension',
+          heatmapTitle: 'Browsing History Heatmap',
+          feedbackBtn: 'Feedback',
+          feedbackTooltip: 'Join the discussion'
+        },
+        ja: {
+          title: 'History Heat',
+          description: 'ブラウザの履歴を可視化するヒートマップツールで、閲覧習慣をより深く理解できます。',
+          featuresTitle: '主な機能',
+          features: [
+            'ブラウジング履歴の可視化',
+            'アクセス頻度のヒートマップ表示',
+            '多言語対応',
+            'プライバシーを考慮したローカルデータ保存',
+            'Chrome拡張機能対応'
+          ],
+          githubLink: 'GitHubリポジトリ',
+          downloadLink: '拡張機能をダウンロード',
+          heatmapTitle: 'ブラウジング履歴ヒートマップ',
+          feedbackBtn: 'フィードバック',
+          feedbackTooltip: 'ディスカッションに参加'
+        },
+        ko: {
+          title: 'History Heat',
+          description: '브라우저 방문 기록을 히트맵으로 시각화하여 탐색 습관을 더 잘 이해할 수 있도록 도와주는 도구입니다.',
+          featuresTitle: '주요 기능',
+          features: [
+            '브라우징 기록 시각화',
+            '방문 빈도 히트맵 표시',
+            '다국어 지원',
+            '개인정보 보호를 위한 로컬 데이터 저장',
+            'Chrome 확장 프로그램 지원'
+          ],
+          githubLink: 'GitHub 저장소',
+          downloadLink: '확장 프로그램 다운로드',
+          heatmapTitle: '브라우징 기록 히트맵',
+          feedbackBtn: '피드백',
+          feedbackTooltip: '토론 참여하기'
+        },
+        uk: {
+          title: 'History Heat',
+          description: 'Потужний інструмент візуалізації теплової карти історії браузера, який допоможе краще зрозуміти ваші звички перегляду.',
+          featuresTitle: 'Основні функції',
+          features: [
+            'Візуалізація історії перегляду',
+            'Відображення частоти відвідувань на тепловій карті',
+            'Багатомовна підтримка',
+            'Локальне зберігання даних для конфіденційності',
+            'Підтримка розширення Chrome'
+          ],
+          githubLink: 'GitHub репозиторій',
+          downloadLink: 'Завантажити розширення',
+          heatmapTitle: 'Теплова карта історії перегляду',
+          feedbackBtn: 'Відгук',
+          feedbackTooltip: 'Приєднатися до обговорення'
+        },
+        es: {
+          title: 'History Heat',
+          description: 'Una potente herramienta de visualización de mapa de calor del historial del navegador para ayudarte a comprender mejor tus hábitos de navegación.',
+          featuresTitle: 'Características principales',
+          features: [
+            'Visualización del historial de navegación',
+            'Mapa de calor de frecuencia de visitas',
+            'Soporte multilingüe',
+            'Almacenamiento local de datos para privacidad',
+            'Soporte para extensión de Chrome'
+          ],
+          githubLink: 'Repositorio GitHub',
+          downloadLink: 'Descargar extensión',
+          heatmapTitle: 'Mapa de calor del historial de navegación',
+          feedbackBtn: 'Comentarios',
+          feedbackTooltip: 'Unirse a la discusión'
+        },
+        de: {
+          title: 'History Heat',
+          description: 'Ein leistungsstarkes Visualisierungstool für Browser-Verlauf-Heatmaps, das Ihnen hilft, Ihre Surfgewohnheiten besser zu verstehen.',
+          featuresTitle: 'Hauptfunktionen',
+          features: [
+            'Visualisierung des Browserverlaufs',
+            'Heatmap-Anzeige der Besuchshäufigkeit',
+            'Mehrsprachige Unterstützung',
+            'Lokale Datenspeicherung für Privatsphäre',
+            'Chrome-Erweiterung Unterstützung'
+          ],
+          githubLink: 'GitHub Repository',
+          downloadLink: 'Erweiterung herunterladen',
+          heatmapTitle: 'Browserverlauf-Heatmap',
+          feedbackBtn: 'Feedback',
+          feedbackTooltip: 'An der Diskussion teilnehmen'
+        },
+        ru: {
+          title: 'History Heat',
+          description: 'Мощный инструмент визуализации тепловой карты истории браузера, помогающий лучше понять ваши привычки просмотра.',
+          featuresTitle: 'Основные функции',
+          features: [
+            'Визуализация истории просмотров',
+            'Тепловая карта частоты посещений',
+            'Многоязычная поддержка',
+            'Локальное хранение данных для конфиденциальности',
+            'Поддержка расширения Chrome'
+          ],
+          githubLink: 'GitHub репозиторий',
+          downloadLink: 'Скачать расширение',
+          heatmapTitle: 'Тепловая карта истории просмотров',
+          feedbackBtn: 'Отзыв',
+          feedbackTooltip: 'Присоединиться к обсуждению'
+        }
+      };
+
+      function changeLanguage() {
+        const lang = document.getElementById('language-select').value;
+        const translation = translations[lang];
+
+        document.getElementById('title').textContent = translation.title;
+        document.getElementById('description').textContent = translation.description;
+        document.getElementById('features-title').textContent = translation.featuresTitle;
+        
+        const featuresList = document.getElementById('features-list');
+        featuresList.innerHTML = translation.features
+          .map(feature => `<li>${feature}</li>`)
+          .join('');
+
+        document.getElementById('github-link').textContent = translation.githubLink;
+        document.getElementById('download-link').textContent = translation.downloadLink;
+        document.getElementById('heatmap-title').textContent = translation.heatmapTitle;
+        
+        // 更新反馈按钮文本
+        document.getElementById('feedback-text').textContent = translation.feedbackBtn;
+        document.getElementById('feedback-tooltip').textContent = translation.feedbackTooltip;
+
+        // 跟踪语言切换
+        trackLanguageChange(lang);
+      }
+
+      function openFeedback() {
+        // 跟踪反馈按钮点击
+        trackFeatureUsage('feedback_button_clicked');
+        window.open('https://github.com/firevenus/HistoryHeat/discussions', '_blank');
+      }
+
+      // 生成模拟数据
+      function generateMockData() {
+        const data = [];
+        const now = new Date();
+        for (let i = 0; i < 100; i++) {
+          const date = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
+          data.push({
+            date: date,
+            value: Math.floor(Math.random() * 100)
+          });
+        }
+        return data.sort((a, b) => a.date - b.date);
+      }
+
+      // 绘制热力图
+      function drawHeatmap() {
+        const data = generateMockData();
+        const margin = {top: 20, right: 30, bottom: 30, left: 40};
+        const width = document.getElementById('heatmap').clientWidth - margin.left - margin.right;
+        const height = 300;
+
+        d3.select('#heatmap').selectAll('*').remove();
+
+        const svg = d3.select('#heatmap')
+          .append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleTime()
+          .domain(d3.extent(data, d => d.date))
+          .range([0, width]);
+
+        const y = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d.value)])
+          .range([height, 0]);
+
+        // 添加 X 轴
+        svg.append('g')
+          .attr('transform', `translate(0,${height})`)
+          .call(d3.axisBottom(x));
+
+        // 添加 Y 轴
+        svg.append('g')
+          .call(d3.axisLeft(y));
+
+        // 创建一个提示框
+        const tooltip = d3.select('body')
+          .append('div')
+          .attr('class', 'tooltip')
+          .style('opacity', 0);
+
+        // 绘制数据点
+        svg.selectAll('circle')
+          .data(data)
+          .enter()
+          .append('circle')
+          .attr('cx', d => x(d.date))
+          .attr('cy', d => y(d.value))
+          .attr('r', 5)
+          .style('fill', d => d3.interpolateReds(d.value / 100))
+          .on('mouseover', function(event, d) {
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr('r', 8);
+            
+            tooltip.transition()
+              .duration(200)
+              .style('opacity', .9);
+            
+            tooltip.html(`日期: ${d.date.toLocaleDateString()}<br/>值: ${d.value}`)
+              .style('left', (event.pageX + 10) + 'px')
+              .style('top', (event.pageY - 28) + 'px');
+          })
+          .on('mouseout', function() {
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr('r', 5);
+            
+            tooltip.transition()
+              .duration(500)
+              .style('opacity', 0);
+          });
+
+        // 跟踪热力图交互
+        trackHeatmapInteraction('heatmap_rendered');
+      }
+
+      // 初始化页面时绘制热力图
+      drawHeatmap();
+
+      // 监听窗口大小变化，重新绘制热力图
+      window.addEventListener('resize', drawHeatmap);
+    </script>
   </body>
 </html>
