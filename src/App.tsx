@@ -5,6 +5,7 @@ import { openDB } from 'idb';
 import './App.css';
 import Heatmap from './components/Heatmap';
 import BookmarkList from './components/BookmarkList';
+import { ConsentBanner } from './components/ConsentBanner';
 
 interface HistoryItem {
   id: string;
@@ -98,6 +99,26 @@ const App: React.FC = () => {
 
     setFavorites(newFavorites);
     await chrome.storage.sync.set({ favorites: newFavorites });
+  };
+
+  const App = () => {
+    const [showConsent, setShowConsent] = useState(!localStorage.getItem('cookieConsent'));
+
+    const handleConsent = (accepted: boolean) => {
+      localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'rejected');
+      setShowConsent(false);
+      // 初始化Google CMP
+      window.__tcfapi?.('addEventListener', 2, (tcData) => {
+        console.log('TCF Event:', tcData);
+      });
+    };
+  
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        {showConsent && <ConsentBanner onAccept={() => handleConsent(true)} onReject={() => handleConsent(false)} />}
+        {/* 原有内容 */}
+      </div>
+    );
   };
 
   return (

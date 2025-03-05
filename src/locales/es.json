@@ -3,6 +3,13 @@
     "title": "Historial de Navegación",
     "heatmap": "Mapa de Calor",
     "timeRange": "Rango de Tiempo",
+    "statistics": "Estadísticas",
+    "consentBanner": {
+      "title": "Preferencias de privacidad",
+      "description": "Usamos cookies para mejorar tu experiencia. Por favor elige tus preferencias de privacidad.",
+      "accept": "Aceptar todo",
+      "reject": "Rechazar todo"
+    },
     "statistics": "Estadísticas"
   }
 }

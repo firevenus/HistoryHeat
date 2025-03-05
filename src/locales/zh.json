@@ -22,5 +22,11 @@
     "empty": "暂无收藏网站",
     "tip": "浏览网站时点击🔥图标即可添加收藏"
   },
+  "consentBanner": {
+    "title": "隐私偏好设置",
+    "description": "我们使用cookies来提升您的体验。请选择您的隐私偏好。",
+    "accept": "接受全部",
+    "reject": "拒绝全部"
+  },
   "switchLanguage": "切换语言"
-} 
+}

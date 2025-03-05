@@ -22,5 +22,12 @@
     "empty": "No bookmarks yet",
     "tip": "Click 🔥 icon while browsing to add bookmarks"
   },
+  "switchLanguage": "Switch Language",
+  "consentBanner": {
+    "title": "Privacy Preferences",
+    "description": "We use cookies to enhance your experience. Please choose your privacy preferences.",
+    "accept": "Accept All",
+    "reject": "Reject All"
+  },
   "switchLanguage": "Switch Language"
-} 
+}
